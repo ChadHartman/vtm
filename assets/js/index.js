@@ -23,6 +23,22 @@ let app = {
 
         isFetchingResources: () => {
             return app.state.req_attempt !== app.state.req_success;
+        },
+
+        // Only filtered if all tags are missing
+        isFiltered: (character) => {
+
+            if (app.state.filters.length === 0) {
+                return false;
+            }
+
+            for (let tag of character.tags) {
+                if (!app.state.filters.includes(tag)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     },
 
@@ -59,6 +75,8 @@ let app = {
                         filter: elem.attr("data-tag")
                     }, app.ui.addFilter);
                 });
+
+            app.ui.filters.render();
         },
 
         addFilter: (e) => {
@@ -77,17 +95,25 @@ let app = {
 
                 default:
                     if (app.state.filters.includes(filter)) {
-                        array.splice(array.indexOf(filter), 1);
+                        app.state.filters.splice(app.state.filters.indexOf(filter), 1);
                     } else {
                         app.state.filters.push(filter);
                     }
                     break;
             }
 
-            $(".filter-item span").removeClass("filtered");
+            app.ui.filters.render();
+            app.ui.relMap.populate();
+        },
 
-            for (let filter of app.state.filters) {
-                $(`.filter-item[data-tag="${filter}"] span`).addClass("filtered");
+        filters: {
+            render: () => {
+                $(".filter-item span").removeClass("filtered");
+
+                for (let filter of app.state.filters) {
+                    $(`.filter-item[data-tag="${filter}"] span`).addClass("filtered");
+                }
+
             }
         },
 
@@ -104,39 +130,44 @@ let app = {
 
             addRelationships: () => {
 
-                const offsetX = 50;
-                const offsetY = 50;
-                let canvas = $("#rel-map canvas").get(0);
-                let ctx = canvas.getContext("2d");
-                ctx.lineWidth = 5;
-                ctx.strokeStyle = "white";
+                // const offsetX = 50;
+                // const offsetY = 50;
+                // let canvas = $("#rel-map canvas").get(0);
+                // let ctx = canvas.getContext("2d");
+                // ctx.lineWidth = 5;
+                // ctx.strokeStyle = "white";
 
-                ctx.beginPath();
+                // ctx.beginPath();
 
-                for (let rel of app.state.relationships) {
-                    let startChar = app.util.findChar(rel.characters[0]);
-                    let stopChar = app.util.findChar(rel.characters[1]);
+                // for (let rel of app.state.relationships) {
+                //     let startChar = app.util.findChar(rel.characters[0]);
+                //     let stopChar = app.util.findChar(rel.characters[1]);
 
-                    ctx.moveTo(startChar.loc.x + offsetX, startChar.loc.y + offsetY);
-                    ctx.lineTo(stopChar.loc.x + offsetX, stopChar.loc.y + offsetY);
-                }
+                //     ctx.moveTo(startChar.loc.x + offsetX, startChar.loc.y + offsetY);
+                //     ctx.lineTo(stopChar.loc.x + offsetX, stopChar.loc.y + offsetY);
+                // }
 
-                ctx.stroke();
+                // ctx.stroke();
             },
 
             addCharacters: () => {
                 let mapContainer = $("#rel-map");
                 let canvas = mapContainer.find("canvas").get(0);
+                let characters = [];
+                for (let character of app.state.characters) {
+                    if (!(character.filtered = app.util.isFiltered(character))) {
+                        characters.push(character);
+                    }
+                }
 
-                // Add divs
                 let cx = Math.round(canvas.width / 2.0);
                 let cy = Math.round(canvas.height / 2.0);
-                let aStep = Math.PI * 2 / app.state.characters.length;
+                let aStep = Math.PI * 2 / characters.length;
                 let r = (cx < cy ? cx : cy) / 1.3;
                 let charInfoTemplate = app.state.templates["char-info"];
 
-                for (let i = 0; i < app.state.characters.length; i++) {
-                    let character = app.state.characters[i];
+                for (let i = 0; i < characters.length; i++) {
+                    let character = characters[i];
                     let a = i * aStep;
                     let x = Math.round(cx + r * Math.cos(a) - 64);
                     let y = Math.round(cy + r * Math.sin(a) - 32);
