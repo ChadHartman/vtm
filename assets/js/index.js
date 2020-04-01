@@ -1,5 +1,10 @@
 let app = {
 
+    constants: {
+        REL_OFFSET_X: 50,
+        REL_OFFSET_Y: 50
+    },
+
     state: {
         characters: [],
         relationships: [],
@@ -134,13 +139,10 @@ let app = {
                 canvas.width = mapContainer.width();
                 canvas.height = mapContainer.height();
 
-                mapContainer.find(".char-info").remove();
+                mapContainer.find(".char-info, .rel-info").remove();
             },
 
             drawRelationships: (ctx, lineWidth, strokeStyle, relationships) => {
-
-                const offsetX = 50;
-                const offsetY = 50;
 
                 ctx.lineWidth = lineWidth;
                 ctx.strokeStyle = strokeStyle;
@@ -151,8 +153,12 @@ let app = {
                     let startChar = app.util.findChar(rel.characters[0]);
                     let stopChar = app.util.findChar(rel.characters[1]);
 
-                    ctx.moveTo(startChar.loc.x + offsetX, startChar.loc.y + offsetY);
-                    ctx.lineTo(stopChar.loc.x + offsetX, stopChar.loc.y + offsetY);
+                    ctx.moveTo(
+                        startChar.loc.x + app.constants.REL_OFFSET_X,
+                        startChar.loc.y + app.constants.REL_OFFSET_Y);
+                    ctx.lineTo(
+                        stopChar.loc.x + app.constants.REL_OFFSET_X,
+                        stopChar.loc.y + app.constants.REL_OFFSET_Y);
                 }
 
                 ctx.stroke();
@@ -175,8 +181,14 @@ let app = {
                         relationships.push(rel);
                         mapContainer.append(
                             $(Mustache.render(template, rel))
-                            .css("left", Math.round(app.util.avg([startChar.loc.x, stopChar.loc.x])))
-                            .css("top", Math.round(app.util.avg([startChar.loc.y, stopChar.loc.y]))));
+                            .css("left", Math.round(app.util.avg([
+                                startChar.loc.x + app.constants.REL_OFFSET_X - 10,
+                                stopChar.loc.x + app.constants.REL_OFFSET_X - 10
+                            ])))
+                            .css("top", Math.round(app.util.avg([
+                                startChar.loc.y + app.constants.REL_OFFSET_Y - 10,
+                                stopChar.loc.y + app.constants.REL_OFFSET_Y - 10
+                            ]))));
                     }
                 }
 
@@ -187,7 +199,7 @@ let app = {
                 let ctx = $("#rel-map canvas").get(0).getContext("2d");
 
                 app.ui.relMap.drawRelationships(ctx, 7, "black", relationships);
-                app.ui.relMap.drawRelationships(ctx, 5, "#525", relationships);
+                app.ui.relMap.drawRelationships(ctx, 5, "#999", relationships);
             },
 
             addCharacters: () => {
