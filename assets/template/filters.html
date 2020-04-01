@@ -1,8 +1,22 @@
 <div>
     {{#tags}}
-    <div class="tag">
-        <img src="assets/img/icon-small-{{.}}.png" alt="{{.}}" />
-        <p>{{.}}</p>
+    <div class="filter-item" data-tag="{{.}}">
+        <div class="tag">
+            <img src="assets/img/icon-small-{{.}}.png" alt="{{.}}" />
+        </div>
+        <span>{{.}}</span>
     </div>
     {{/tags}}
+    <div class="filter-item" data-tag="select_all">
+        <div class="tag">
+            <i class="fas fa-check-square"></i>
+        </div>
+        <span>Select All</span>
+    </div>
+    <div class="filter-item" data-tag="select_none">
+        <div class="tag">
+            <i class="fas fa-square"></i>
+        </div>
+        <span>Select None</span>
+    </div>
 </div>

@@ -3,7 +3,8 @@ let app = {
     state: {
         characters: [],
         relationships: [],
-        tags: new Set(),
+        tags: [],
+        filters: [],
         templates: {},
         req_attempt: 0,
         req_success: 0
@@ -26,6 +27,13 @@ let app = {
     },
 
     ui: {
+
+        onCloseOverlay: (e) => {
+            $("#overlay")
+                .hide()
+                .find("#modal").empty();
+        },
+
         onCharClick: (e) => {
             $("#overlay").show();
 
@@ -39,6 +47,49 @@ let app = {
             }
         },
 
+        onFilterClick: (e) => {
+            $("#overlay").show();
+
+            $("#modal").html(Mustache.render(
+                    app.state.templates["filters"],
+                    app.state))
+                .find(".filter-item").each((i, e) => {
+                    let elem = $(e);
+                    elem.on("click", {
+                        filter: elem.attr("data-tag")
+                    }, app.ui.addFilter);
+                });
+        },
+
+        addFilter: (e) => {
+            let filter = e.data.filter;
+
+            switch (filter) {
+
+                case "select_none":
+                    app.state.filters = [];
+                    app.state.filters.push(...app.state.tags);
+                    break;
+
+                case "select_all":
+                    app.state.filters = [];
+                    break;
+
+                default:
+                    if (app.state.filters.includes(filter)) {
+                        array.splice(array.indexOf(filter), 1);
+                    } else {
+                        app.state.filters.push(filter);
+                    }
+                    break;
+            }
+
+            $(".filter-item span").removeClass("filtered");
+
+            for (let filter of app.state.filters) {
+                $(`.filter-item[data-tag="${filter}"] span`).addClass("filtered");
+            }
+        },
 
         relMap: {
 
@@ -160,11 +211,13 @@ let app = {
             switch (id) {
 
                 case "characters":
+                    let tags = new Set();
                     for (let character of json) {
                         for (let tag of character.tags) {
-                            app.state.tags.add(tag);
+                            tags.add(tag);
                         }
                     }
+                    app.state.tags = Array.from(tags);
                     app.state.characters = json;
                     app.ui.relMap.populate();
                     break;
@@ -199,11 +252,17 @@ let app = {
     start: () => {
         app.template.load("char-detail");
         app.template.load("char-info");
+        app.template.load("filters");
         app.character.load("characters");
         app.character.load("relationships");
 
         window.onresize = app.ui.relMap.populate;
-        $("#overlay").hide().click(() => $("#overlay").hide());
+        $("#overlay")
+            .hide()
+            .click(app.ui.onCloseOverlay)
+            .find("#modal").click((e) => e.stopPropagation());
+
+        $("#filter-button").click(app.ui.onFilterClick);
     }
 };
 
