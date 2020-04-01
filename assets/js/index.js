@@ -15,10 +15,12 @@ let app = {
                     return character;
                 }
             }
+
+            throw Error(`Unable to find character with id "${id}"`);
         },
 
         isFetchingResources: () => {
-            return req_attempt !== req_success;
+            return app.state.req_attempt !== app.state.req_success;
         }
     },
 
@@ -36,48 +38,62 @@ let app = {
             }
         },
 
-        loadRelMap: () => {
 
-            // Resize
-            let mapContainer = $("#rel-map");
-            let canvas = mapContainer.find("canvas").get(0);
-            canvas.width = mapContainer.width();
-            canvas.height = mapContainer.height();
+        relMap: {
 
-            if (app.state.characters.length === 0) {
-                return;
+            reset: () => {
+                let mapContainer = $("#rel-map");
+                let canvas = mapContainer.find("canvas").get(0);
+                canvas.width = mapContainer.width();
+                canvas.height = mapContainer.height();
+
+                mapContainer.find(".char-info").remove();
+            },
+
+            addCharacters: () => {
+                let mapContainer = $("#rel-map");
+                let canvas = mapContainer.find("canvas").get(0);
+
+                // Add divs
+                let cx = Math.round(canvas.width / 2.0);
+                let cy = Math.round(canvas.height / 2.0);
+                let aStep = Math.PI * 2 / app.state.characters.length;
+                let r = (cx < cy ? cx : cy) / 1.3;
+                let charInfoTemplate = app.state.templates["char-info"];
+
+                for (let i = 0; i < app.state.characters.length; i++) {
+                    let character = app.state.characters[i];
+                    let a = i * aStep;
+                    let x = cx + r * Math.cos(a)
+                    let y = cy + r * Math.sin(a)
+
+                    mapContainer.append(
+                        $(Mustache.render(charInfoTemplate, character))
+                        .css("left", Math.round(x) - 64)
+                        .css("top", Math.round(y) - 32)
+                        .on("click", {
+                                "id": character.id
+                            },
+                            app.ui.onCharClick));
+                }
+            },
+
+            populate: () => {
+                app.ui.relMap.reset();
+
+                if (app.state.characters.length === 0) {
+                    return;
+                }
+
+
+                if (app.util.isFetchingResources()) {
+                    // Content is still loading
+                    return;
+                }
+
+                app.ui.relMap.addCharacters();
             }
 
-            // Cleanup
-            mapContainer.find(".char-info").remove();
-
-            if (app.state.req_attempt !== app.state.req_success) {
-                // Content is still loading
-                return;
-            }
-
-            // Add divs
-            let cx = Math.round(canvas.width / 2.0);
-            let cy = Math.round(canvas.height / 2.0);
-            let aStep = Math.PI * 2 / app.state.characters.length;
-            let r = (cx < cy ? cx : cy) / 1.3;
-            let charInfoTemplate = app.state.templates["char-info"];
-
-            for (let i = 0; i < app.state.characters.length; i++) {
-                let character = app.state.characters[i];
-                let a = i * aStep;
-                let x = cx + r * Math.cos(a)
-                let y = cy + r * Math.sin(a)
-
-                mapContainer.append(
-                    $(Mustache.render(charInfoTemplate, character))
-                    .css("left", Math.round(x) - 64)
-                    .css("top", Math.round(y) - 32)
-                    .on("click", {
-                            "id": character.id
-                        },
-                        app.ui.onCharClick));
-            }
         }
     },
 
@@ -89,7 +105,7 @@ let app = {
 
             app.state.templates[id] = html;
             ++app.state.req_success;
-            app.ui.loadRelMap();
+            app.ui.relMap.populate();
         },
 
         load: (name) => {
@@ -112,7 +128,7 @@ let app = {
 
             if ("characters" === id) {
                 app.state.characters = json;
-                app.ui.loadRelMap();
+                app.ui.relMap.populate();
             } else {
                 let character = app.util.findChar(id);
                 character.detail = json;
@@ -139,7 +155,7 @@ let app = {
         app.template.load("char-info");
         app.character.load("characters");
 
-        window.onresize = app.ui.loadRelMap;
+        window.onresize = app.ui.relMap.populate;
         $("#overlay").hide().click(() => $("#overlay").hide());
     }
 };
