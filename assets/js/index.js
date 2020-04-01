@@ -128,29 +128,50 @@ let app = {
                 mapContainer.find(".char-info").remove();
             },
 
+            drawRelationships: (ctx, lineWidth, strokeStyle, relationships) => {
+
+                const offsetX = 50;
+                const offsetY = 50;
+
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = strokeStyle;
+
+                ctx.beginPath();
+
+                for (let rel of relationships) {
+                    let startChar = app.util.findChar(rel.characters[0]);
+                    let stopChar = app.util.findChar(rel.characters[1]);
+
+                    ctx.moveTo(startChar.loc.x + offsetX, startChar.loc.y + offsetY);
+                    ctx.lineTo(stopChar.loc.x + offsetX, stopChar.loc.y + offsetY);
+                }
+
+                ctx.stroke();
+            },
+
             addRelationships: () => {
 
-                // const offsetX = 50;
-                // const offsetY = 50;
-                // let canvas = $("#rel-map canvas").get(0);
-                // let ctx = canvas.getContext("2d");
-                // ctx.lineWidth = 5;
-                // ctx.strokeStyle = "white";
+                // Check filters
+                let relationships = [];
+                for (let rel of app.state.relationships) {
+                    if (!app.util.isFiltered(app.util.findChar(rel.characters[0])) &&
+                        !app.util.isFiltered(app.util.findChar(rel.characters[1]))) {
+                        relationships.push(rel);
+                    }
+                }
 
-                // ctx.beginPath();
+                if (relationships.length === 0) {
+                    return;
+                }
 
-                // for (let rel of app.state.relationships) {
-                //     let startChar = app.util.findChar(rel.characters[0]);
-                //     let stopChar = app.util.findChar(rel.characters[1]);
+                let ctx = $("#rel-map canvas").get(0).getContext("2d");
 
-                //     ctx.moveTo(startChar.loc.x + offsetX, startChar.loc.y + offsetY);
-                //     ctx.lineTo(stopChar.loc.x + offsetX, stopChar.loc.y + offsetY);
-                // }
-
-                // ctx.stroke();
+                app.ui.relMap.drawRelationships(ctx, 7, "black", relationships);
+                app.ui.relMap.drawRelationships(ctx, 5, "#525", relationships);
             },
 
             addCharacters: () => {
+
                 let mapContainer = $("#rel-map");
                 let canvas = mapContainer.find("canvas").get(0);
                 let characters = [];
@@ -194,7 +215,6 @@ let app = {
                 if (app.state.characters.length === 0) {
                     return;
                 }
-
 
                 if (app.util.isFetchingResources()) {
                     // Content is still loading
@@ -288,6 +308,7 @@ let app = {
         app.character.load("relationships");
 
         window.onresize = app.ui.relMap.populate;
+
         $("#overlay")
             .hide()
             .click(app.ui.onCloseOverlay)
