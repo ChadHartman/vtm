@@ -42,4 +42,8 @@
     "id": "amaroq",
     "name": "Amaroq &#9794;",
     "tags": ["camarilla", "gangrel", "player"]
+}, {
+ "id": "clarence",
+ "name": "Clarence Curry",
+ "tags": ["player", "nosferatu", "camarilla"]
 }]
