@@ -39,7 +39,16 @@ let app = {
             }
 
             return true;
+        },
+
+        avg: (nums) => {
+            let sum = 0;
+            for (let num of nums) {
+                sum += num;
+            }
+            return sum / nums.length;
         }
+
     },
 
     ui: {
@@ -151,12 +160,23 @@ let app = {
 
             addRelationships: () => {
 
+                let mapContainer = $("#rel-map");
+                let template = app.state.templates["rel-info"];
+
                 // Check filters
                 let relationships = [];
                 for (let rel of app.state.relationships) {
-                    if (!app.util.isFiltered(app.util.findChar(rel.characters[0])) &&
-                        !app.util.isFiltered(app.util.findChar(rel.characters[1]))) {
+                    let startChar = app.util.findChar(rel.characters[0]);
+                    let stopChar = app.util.findChar(rel.characters[1]);
+
+                    if (!app.util.isFiltered(startChar) &&
+                        !app.util.isFiltered(stopChar)) {
+
                         relationships.push(rel);
+                        mapContainer.append(
+                            $(Mustache.render(template, rel))
+                            .css("left", Math.round(app.util.avg([startChar.loc.x, stopChar.loc.x])))
+                            .css("top", Math.round(app.util.avg([startChar.loc.y, stopChar.loc.y]))));
                     }
                 }
 
@@ -304,6 +324,7 @@ let app = {
         app.template.load("char-detail");
         app.template.load("char-info");
         app.template.load("filters");
+        app.template.load("rel-info");
         app.character.load("characters");
         app.character.load("relationships");
 
