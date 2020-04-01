@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8">
     <title>VTM Relationship Map</title>
+    <link href="assets/css/fontawesome.min.css" rel="stylesheet">
+    <link href="assets/css/solid.min.css" rel="stylesheet">
     <style>
         body {
             background-color: black;
@@ -27,6 +29,8 @@
             background-image: linear-gradient(to bottom right, black, #500);
         }
 
+        /* <char-info> */
+
         .char-info {
             position: absolute;
             border: 1px solid black;
@@ -46,7 +50,7 @@
 
         .char-info h1 {
             text-align: center;
-            font-size: 18pt;
+            font-size: 14pt;
             margin: 2px 0 0 0;
             padding: 0;
             color: #999;
@@ -60,7 +64,25 @@
             right: 0;
         }
 
+        /* </char-info> */
+        /* <filter> */
 
+        #filter-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        #filter-button i {
+            color: #999;
+            font-size: 22px;
+            text-shadow: 0 0 10px black;
+        }
+
+        /* </filter> */
         /* <tags> */
 
         .tags {
@@ -158,6 +180,9 @@
 <body>
     <div id="rel-map">
         <canvas width="400" height="400"></canvas>
+        <div id="filter-button">
+            <i class="fas fa-filter"></i>
+        </div>
     </div>
     <div id="overlay">
         <div id="modal">
