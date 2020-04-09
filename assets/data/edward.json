@@ -1,0 +1,16 @@
+{
+    "info": [
+        "Camarilla Harpy",
+        "11th Generation",
+        "Capricious"
+    ],
+    "description": "Well tailored and well groomed, when this vampire greets others you see a sparkle in his smile.",
+    "portrait": "portrait-med-edward",
+    "history": [{
+        "date": "2020-03-27",
+        "notes": [
+            "Introduced self to the Coterie.",
+            "Showed an interest in the assassination attempts but left before sying anything more."
+        ]
+    }]
+}

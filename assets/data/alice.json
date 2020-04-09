@@ -1,0 +1,17 @@
+{
+    "info": [
+        "Camarilla Harpy",
+        "11th Generation",
+        "Direct"
+    ],
+    "description": "Confident, witty, and direct; Alice is an imposing conversationalist.",
+    "portrait": "portrait-med-alice",
+    "history": [{
+        "date": "2020-03-27",
+        "notes": [
+            "Introduced self to the Coterie.",
+            "Discussed the nature of the assassination attempts.",
+            "Directed Coterie to Anarch camp."
+        ]
+    }]
+}

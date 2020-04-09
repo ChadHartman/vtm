@@ -1,0 +1,17 @@
+{
+    "info": [
+        "Camarilla Harpy",
+        "10th Generation",
+        "Affable",
+        "Chess fan"
+    ],
+    "description": "Friendly, composed, and energetic; Viktor is a good ally to have.",
+    "portrait": "portrait-med-viktor",
+    "history": [{
+        "date": "2020-03-27",
+        "notes": [
+            "Introduced self to the Coterie.",
+            "Mentioned Isaiah is always beaten at chess by Demetria."
+        ]
+    }]
+}

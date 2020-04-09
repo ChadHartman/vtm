@@ -1,0 +1,27 @@
+<div>
+    <h1>Global</h1>
+    <div class="filter-section">
+        <div class="filter-item" data-tag="select_all">
+            <div class="tag">
+                <i class="fas fa-check-square"></i>
+            </div>
+            <span>Select All</span>
+        </div>
+        <div class="filter-item" data-tag="select_none">
+            <div class="tag">
+                <i class="fas fa-square"></i>
+            </div>
+            <span>Select None</span>
+        </div>
+    </div>
+    <h1>Tags</h1>
+    <div class="filter-section">
+        {{#tags}}
+        <div class="filter-item" data-tag="{{.}}">
+            <div class="tag box-shadowed {{.}}">
+            </div>
+            <span>{{.}}</span>
+        </div>
+        {{/tags}}
+    </div>
+</div>

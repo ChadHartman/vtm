@@ -4,64 +4,24 @@
 <head>
     <meta charset="utf-8">
     <title>VTM Relationship Map</title>
-    <style>
-        body {
-            background-color: black;
-        }
-
-        html,
-        body,
-        p {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-        }
-
-        #rel-map {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            top: 0;
-            background-image: linear-gradient(to bottom right, black, #500);
-        }
-
-        .character {
-            position: absolute;
-            border: 1px solid black;
-            width: 128px;
-            height: 64px;
-            border-radius: 5px;
-            background-color: #aaa;
-            z-index: 0;
-            padding: 5px;
-        }
-
-        .character:hover {
-            z-index: 1;
-        }
-
-        .character p {
-            text-align: center;
-            font-size: 18pt;
-        }
-
-        .character img {
-            float: left;
-            width: 28px;
-            margin-right: 4px;
-        }
-
-        /* modal */
-    </style>
+    <link href="assets/css/fontawesome.min.css" rel="stylesheet">
+    <link href="assets/css/solid.min.css" rel="stylesheet">
+    <link href="assets/css/index.css" rel="stylesheet">
+    <link href="assets/css/tags.css" rel="stylesheet">
 </head>
 
 <body>
     <div id="rel-map">
         <canvas width="400" height="400"></canvas>
+        <div id="filter-button">
+            <a href="#filters"> <i class="fas fa-filter"></i></a>
+        </div>
     </div>
-    <div id="modal">
+    <div id="overlay">
+        <div id="modal">
+        </div>
     </div>
+
     <div>
         <script src="assets/js/mustache.min.js"></script>
         <script src="assets/js/zepto.min.js"></script>

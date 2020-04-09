@@ -1,0 +1,111 @@
+.tag {
+    position: relative;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: #999;
+    padding: 3px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80%;
+    font-family: "Font Awesome 5 Free";
+    margin-left: 1px;
+    margin-right: 1px;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tag p {
+    display: none;
+    background-color: #999;
+    padding: 5px;
+    font-size: 10pt;
+    border: 1px solid black;
+    text-transform: capitalize;
+    color: black;
+    position: absolute;
+    z-index: 5;
+}
+
+.tag:hover p {
+    display: block;
+}
+
+.tag.camarilla {
+    background-image: url("../img/icon-small-camarilla.png");
+}
+
+.tag.brujah {
+    background-image: url("../img/icon-small-brujah.png");
+}
+
+.tag.prince:before {
+    content: "\f43f";
+}
+
+.tag.baron:before {
+    content: "\f521";
+}
+
+.tag.malkavian {
+    background-image: url("../img/icon-small-malkavian.png");
+}
+
+.tag.primogen:before {
+    content: "\f43a";
+}
+
+.tag.nosferatu {
+    background-image: url("../img/icon-small-nosferatu.png");
+}
+
+.tag.toreador {
+    background-image: url("../img/icon-small-toreador.png");
+}
+
+.tag.tremere {
+    background-image: url("../img/icon-small-tremere.png");
+}
+
+.tag.ventrue {
+    background-image: url("../img/icon-small-ventrue.png");
+}
+
+.tag.harpy:before {
+    content: "\f56b";
+}
+
+.tag.seneschal:before {
+    content: "\f445";
+}
+
+.tag.gangrel {
+    background-image: url("../img/icon-small-gangrel.png");
+}
+
+.tag.player:before {
+    content: "\f007";
+}
+
+.tag.anarch {
+    background-image: url("../img/icon-small-anarch.png");
+}
+
+.tag.emissary:before {
+    content: "\f4ba";
+}
+
+.tag.caitiff {
+    background-image: url("../img/icon-small-caitiff.png");
+}
+
+.tag.keeper:before {
+    content: "\f447";
+}
+
+.tag.scourge:before {
+    content: "\f443";
+}

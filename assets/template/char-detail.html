@@ -1,9 +1,46 @@
-<h1>{{name}}</h1>
+<h1>{{{name}}}</h1>
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed libero dolor, iaculis eget metus eget, suscipit vehicula
-    arcu. Integer hendrerit ut quam vitae ultrices. Vestibulum varius nisi in odio ullamcorper commodo. Praesent nec
-    erat congue arcu convallis congue id ut urna. Vivamus commodo egestas imperdiet. Praesent a facilisis lectus. Duis
-    lobortis neque in enim rutrum, vitae egestas enim luctus. Ut quis fermentum dolor. Phasellus gravida nunc vehicula
-    purus blandit, nec porttitor libero ultrices. Sed nec eleifend sem. Morbi rutrum facilisis augue eget lobortis.
-    Suspendisse at diam urna. Ut pellentesque lacus risus, vitae sodales ligula pretium sit amet. Phasellus turpis nisl,
-    tempor vel nibh et, tincidunt porttitor lectus. Proin ac magna nulla. Morbi egestas tincidunt laoreet.</p>
+{{#detail.portrait}}
+<hr />
+<img class="portrait" src="assets/img/{{detail.portrait}}.png" />
+<hr />
+{{/detail.portrait}}
+
+<div class="tags">
+    {{#tags}}
+    <div class="tag box-shadowed {{.}}">
+        <p>{{.}}</p>
+    </div>
+    {{/tags}}
+</div>
+
+<h2>Info</h2>
+
+<ul>
+    {{#detail.info}}
+    <li><span>{{.}}</span></li>
+    {{/detail.info}}
+</ul>
+
+<h2>Description</h2>
+
+<p>{{detail.description}}</p>
+
+{{#detail.history}}
+
+<h2>History</h2>
+
+{{/detail.history}}
+
+<ul>
+    {{#detail.history}}
+    <li>
+        <h3>{{date}}</h3>
+        {{#notes}}
+        <ul>
+            <li><span>{{.}}</span></li>
+        </ul>
+        {{/notes}}
+    </li>
+    {{/detail.history}}
+</ul>
