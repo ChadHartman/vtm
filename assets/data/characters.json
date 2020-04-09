@@ -1,61 +1,72 @@
 [{
-    "id": "tara",
-    "name": "Tara &#9792;",
-    "tags": ["camarilla", "brujah", "prince"]
-}, {
-    "id": "morgan",
-    "name": "Morgan &#9792;",
-    "tags": ["camarilla", "malkavian", "primogen"]
-}, {
-    "id": "louis",
-    "name": "Louis &#9794;",
-    "tags": ["camarilla", "nosferatu", "primogen"]
-}, {
-    "id": "isaiah",
-    "name": "Isaiah &#9794;",
-    "tags": ["camarilla", "toreador", "primogen"]
-}, {
-    "id": "perseus",
-    "name": "Perseus &#9794;",
-    "tags": ["camarilla", "tremere", "primogen"]
-}, {
-    "id": "demetria",
-    "name": "Demetria &#9792;",
-    "tags": ["camarilla", "ventrue", "primogen"]
-}, {
-    "id": "edward",
-    "name": "Edward &#9794;",
-    "tags": ["camarilla", "malkavian", "harpy"]
-}, {
-    "id": "viktor",
-    "name": "Viktor &#9794;",
-    "tags": ["camarilla", "toreador", "harpy"]
-}, {
-    "id": "alice",
-    "name": "Alice &#9792;",
-    "tags": ["camarilla", "brujah", "harpy"]
-}, {
-    "id": "ursulette",
-    "name": "Ursulette &#9792;",
-    "tags": ["camarilla", "ventrue", "seneschal"]
-}, {
-    "id": "amaroq",
-    "name": "Amaroq &#9794;",
-    "tags": ["camarilla", "scourge", "gangrel", "player"]
-}, {
-    "id": "clarence",
-    "name": "Clarence Curry &#9794;",
-    "tags": ["camarilla", "nosferatu", "player"]
-}, {
-    "id": "griffin",
-    "name": "Griffin &#9794;",
-    "tags": ["camarilla", "nosferatu", "keeper"]
-}, {
-    "id": "gair",
-    "name": "Gair &#9794;",
-    "tags": ["anarch", "baron", "caitiff"]
-}, {
-    "id": "aleron",
-    "name": "Aleron &#9792;",
-    "tags": ["anarch", "emissary", "brujah"]
-}]
+        "id": "tara",
+        "name": "Tara &#9792;",
+        "tags": ["camarilla", "brujah", "prince"]
+    }, {
+        "id": "morgan",
+        "name": "Morgan &#9792;",
+        "tags": ["camarilla", "malkavian", "primogen"]
+    }, {
+        "id": "louis",
+        "name": "Louis &#9794;",
+        "tags": ["camarilla", "nosferatu", "primogen"]
+    }, {
+        "id": "isaiah",
+        "name": "Isaiah &#9794;",
+        "tags": ["camarilla", "toreador", "primogen"]
+    }, {
+        "id": "perseus",
+        "name": "Perseus &#9794;",
+        "tags": ["camarilla", "tremere", "primogen"]
+    }, {
+        "id": "demetria",
+        "name": "Demetria &#9792;",
+        "tags": ["camarilla", "ventrue", "primogen"]
+    }, {
+        "id": "edward",
+        "name": "Edward &#9794;",
+        "tags": ["camarilla", "malkavian", "harpy"]
+    }, {
+        "id": "viktor",
+        "name": "Viktor &#9794;",
+        "tags": ["camarilla", "toreador", "harpy"]
+    }, {
+        "id": "alice",
+        "name": "Alice &#9792;",
+        "tags": ["camarilla", "brujah", "harpy"]
+    }, {
+        "id": "ursulette",
+        "name": "Ursulette &#9792;",
+        "tags": ["camarilla", "ventrue", "seneschal"]
+    }, {
+        "id": "amaroq",
+        "name": "Amaroq &#9794;",
+        "tags": ["camarilla", "scourge", "gangrel", "player"]
+    }, {
+        "id": "clarence",
+        "name": "Clarence Curry &#9794;",
+        "tags": ["camarilla", "nosferatu", "player"]
+    }, {
+        "id": "griffin",
+        "name": "Griffin &#9794;",
+        "tags": ["camarilla", "nosferatu", "keeper"]
+    }, {
+        "id": "gair",
+        "name": "Gair &#9794;",
+        "tags": ["anarch", "baron", "caitiff"]
+    }, {
+        "id": "aleron",
+        "name": "Aleron &#9792;",
+        "tags": ["anarch", "emissary", "brujah"]
+    },
+    {
+        "id": "franz",
+        "name": "Franz &#9794;",
+        "tags": ["camarilla", "toreador", "player"]
+    },
+    {
+        "id": "vladislav",
+        "name": "Vladislav &#9794;",
+        "tags": ["camarilla", "tremere", "player"]
+    }
+]
