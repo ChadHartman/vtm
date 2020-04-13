@@ -72,5 +72,10 @@
         "id": "ben_odom",
         "name": "Benjamin Odom &#9794;",
         "tags": ["camarilla", "ghoul"]
+    },
+    {
+        "id": "kane",
+        "name": "Kane &#9794;",
+        "tags": ["camarilla", "nosferatu", "sheriff"]
     }
 ]

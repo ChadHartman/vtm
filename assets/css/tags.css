@@ -113,3 +113,7 @@
 .tag.ghoul:before {
     content: "\f11a";
 }
+
+.tag.sheriff:before {
+    content: "\f441";
+}
