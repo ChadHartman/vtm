@@ -13,15 +13,22 @@
 <body>
     <div id="rel-map">
         <canvas width="400" height="400"></canvas>
-        <div id="filter-button">
-            <a href="#filters"> <i class="fas fa-filter"></i></a>
+        <div id="buttons">
+            <div class="button">
+                <a href="#filters"> <i class="fas fa-filter"></i></a>
+            </div>
+            <div id="button-layout-round" class="button">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <div id="button-layout-square" class="button">
+                <i class="fas fa-th"></i>
+            </div>
         </div>
     </div>
     <div id="overlay">
         <div id="modal">
         </div>
     </div>
-
     <div>
         <script src="assets/js/mustache.min.js"></script>
         <script src="assets/js/zepto.min.js"></script>

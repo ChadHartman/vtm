@@ -68,5 +68,9 @@
         "id": "vladislav",
         "name": "Vladislav &#9794;",
         "tags": ["camarilla", "tremere", "player"]
+    }, {
+        "id": "ben_odom",
+        "name": "Benjamin Odom &#9794;",
+        "tags": ["camarilla", "ghoul"]
     }
 ]

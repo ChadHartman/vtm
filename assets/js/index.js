@@ -4,7 +4,7 @@ let app = {
 
     log: {
 
-        LOG_LEVEL: 3,
+        LOG_LEVEL: 1,
         DEBUG: 1,
         VERBOSE: 0,
 
@@ -144,9 +144,13 @@ let app = {
 
     relMap: {
 
+        getCanvas: () => {
+            return $("#rel-map canvas").get(0);
+        },
+
         reset: () => {
             let mapContainer = $("#rel-map");
-            let canvas = mapContainer.find("canvas").get(0);
+            let canvas = app.relMap.getCanvas();
             canvas.width = mapContainer.width();
             canvas.height = mapContainer.height();
 
@@ -215,34 +219,22 @@ let app = {
         addCharacterElems: () => {
 
             let mapContainer = $("#rel-map");
-            let canvas = mapContainer.find("canvas").get(0);
-            let characters = [];
-            for (let c of app.model.characters) {
-                if (!app.filter.isFiltered(c)) {
-                    characters.push(c);
-                }
-            }
+            let characters = app.model.getVisibleChars();
+            let layout = app.layout.get(characters.length);
+            let ix = layout.x.entries();
+            let iy = layout.y.entries();
 
-            let cx = Math.round(canvas.width / 2.0);
-            let cy = Math.round(canvas.height / 2.0);
-            let aStep = Math.PI * 2 / characters.length;
-            let r = (cx < cy ? cx : cy) / 1.3;
-
-            for (let i = 0; i < characters.length; i++) {
-                let character = characters[i];
-                let a = i * aStep;
-                let x = Math.round(cx + r * Math.cos(a) - 64);
-                let y = Math.round(cy + r * Math.sin(a) - 32);
+            for (let character of characters) {
 
                 character.loc = {
-                    x: x,
-                    y: y
+                    x: ix.next().value[1],
+                    y: iy.next().value[1]
                 };
 
                 mapContainer.append(
                     $(app.template.render("char-info", character))
-                    .css("left", x)
-                    .css("top", y));
+                    .css("left", character.loc.x)
+                    .css("top", character.loc.y));
             }
         },
 
@@ -344,6 +336,16 @@ let app = {
             }
 
             throw Error(`Unable to find character "${id}"`);
+        },
+
+        getVisibleChars: () => {
+            let characters = [];
+            for (let c of app.model.characters) {
+                if (!app.filter.isFiltered(c)) {
+                    characters.push(c);
+                }
+            }
+            return characters;
         },
 
         loadCharacter: (id) => {
@@ -495,6 +497,131 @@ let app = {
         }
     },
 
+    layout: {
+
+        /**
+            f1| n2-4 | c4
+            	* *
+            	* *
+
+            f2| n5-8 | c8
+            	 * * *
+            	 *   *
+            	 * * *
+
+            f3| n9-12 | c12
+            	* * * *
+            	*     *
+            	*     *
+                * * * *
+            fn | (((n-1)*4)+1)-(n*4) | (n*4)
+        */
+        getSquare: (size) => {
+
+            let canvas = app.relMap.getCanvas();
+            let sideLen = canvas.width < canvas.height ? canvas.width : canvas.height;
+
+            // Seeded with init pos centered
+            let xList = [Math.round((canvas.width - sideLen) / 2) + 50];
+            let yList = [Math.round((canvas.height - sideLen) / 2) + 50];
+
+            // Use to determine size of square
+            let factor = Math.ceil(size / 4.0);
+
+            // factor + 1 because a side has f + 1 elements
+            let offset = Math.round(sideLen / (factor + 1));
+
+            // Subcounter used to track which side
+            let si = 0;
+            let side = 0;
+            let i = 0;
+
+            // Skip first one
+            for (i = 1; i < size; i++) {
+
+                switch (side) {
+                    case 0:
+                        // Go right
+                        xList.push(xList[i - 1] + offset);
+                        yList.push(yList[i - 1]);
+                        break;
+
+                    case 1:
+                        // Go down
+                        xList.push(xList[i - 1]);
+                        yList.push(yList[i - 1] + offset);
+                        break;
+
+                    case 2:
+                        // Go left
+                        xList.push(xList[i - 1] - offset);
+                        yList.push(yList[i - 1]);
+                        break;
+
+                    case 3:
+                        // Go up
+                        xList.push(xList[i - 1]);
+                        yList.push(yList[i - 1] - offset);
+                        break;
+                }
+
+                if (++si === factor) {
+                    // Turned a corner
+                    si = 0;
+                    ++side;
+                }
+            }
+
+            return {
+                x: xList,
+                y: yList
+            };
+        },
+
+        getCircular: (size) => {
+
+            let canvas = app.relMap.getCanvas();
+            let cx = Math.round(canvas.width / 2.0);
+            let cy = Math.round(canvas.height / 2.0);
+            let aStep = Math.PI * 2 / size;
+            let r = (cx < cy ? cx : cy) / 1.3;
+            let xList = [];
+            let yList = [];
+
+            for (let i = 0; i < size; i++) {
+                let a = i * aStep;
+                xList.push(Math.round(cx + r * Math.cos(a) - 64));
+                yList.push(Math.round(cy + r * Math.sin(a) - 32));
+            }
+
+            return {
+                x: xList,
+                y: yList
+            };
+        },
+
+        get: (size) => {
+            return app.layout.getCircular(size);
+            // return app.layout.getSquare(size);
+        },
+
+        init: () => {
+            $("#button-layout-square").click(() => {
+                $("#button-layout-square").hide();
+                $("#button-layout-round").show();
+                app.layout.get = app.layout.getSquare;
+                app.route.refresh();
+            });
+
+            $("#button-layout-round").click(() => {
+                $("#button-layout-square").show();
+                $("#button-layout-round").hide();
+                app.layout.get = app.layout.getCircular;
+                app.route.refresh();
+            }).hide();
+        }
+    },
+
     start: () => {
         app.log.verbose("Start begin.");
 
@@ -504,6 +631,7 @@ let app = {
         app.template.load("rel-info");
         app.model.loadCharacters();
         app.model.loadRelationships();
+        app.layout.init();
         app.route.init();
 
         window.onresize = app.route.refresh;

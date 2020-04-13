@@ -22,6 +22,30 @@ html, body, p {
     box-shadow: 5px 5px 5px black;
 }
 
+/* <buttons> */
+
+#buttons {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.button {
+    float: right;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.button i {
+    color: #999;
+    font-size: 22px;
+    text-shadow: 0 0 10px black;
+}
+
+/* </buttons> */
+
 /* <char-info> */
 
 .char-info {
@@ -63,21 +87,6 @@ html, body, p {
 /* </char-info> */
 
 /* <filter> */
-
-#filter-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-}
-
-#filter-button i {
-    color: #999;
-    font-size: 22px;
-    text-shadow: 0 0 10px black;
-}
 
 .filter-item {
     width: 128px;
