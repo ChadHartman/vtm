@@ -22,12 +22,60 @@
     "info": [
         "Louis finds Amaroq offensive."
     ]
-},{
+}, {
     "characters": [
         "griffin",
         "ben_odom"
     ],
     "info": [
         "Benjamin is one of Griffin's ghouls."
+    ]
+}, {
+    "characters": [
+        "griffin",
+        "maggart"
+    ],
+    "info": [
+        "Griffin revealed that Maggart is a skilled animalist."
+    ]
+}, {
+    "characters": [
+        "griffin",
+        "dante"
+    ],
+    "info": [
+        "Griffin revealed that Dante is a skilled animalist."
+    ]
+}, {
+    "characters": [
+        "griffin",
+        "joshua"
+    ],
+    "info": [
+        "Griffin revealed that Joshua is a skilled animalist."
+    ]
+}, {
+    "characters": [
+        "kane",
+        "clarence"
+    ],
+    "info": [
+        "Kane took Clarence away over the \"Goat Incident\"."
+    ]
+}, {
+    "characters": [
+        "aleron",
+        "tara"
+    ],
+    "info": [
+        "Aleron and Tara were once friends, Aleron still feels a kinship to Tara and wishes her well."
+    ]
+}, {
+    "characters": [
+        "alice",
+        "amaroq"
+    ],
+    "info": [
+        "Alice told Amaroq she thought the Anarchs are responsible for the assassination attempts."
     ]
 }]

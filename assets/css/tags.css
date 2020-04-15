@@ -28,6 +28,7 @@
     color: black;
     position: absolute;
     z-index: 5;
+    overflow-wrap: normal;
 }
 
 .tag:hover p {

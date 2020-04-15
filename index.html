@@ -11,29 +11,126 @@
 </head>
 
 <body>
-    <div id="rel-map">
-        <canvas width="400" height="400"></canvas>
-        <div id="buttons">
-            <div class="button">
-                <a href="#filters"> <i class="fas fa-filter"></i></a>
+    <div id="app">
+        <div id="relmap" ref="relmap_container">
+            <canvas id="relmap_canvas_background" ref="relmap_canvas_background" width="400" height="400"></canvas>
+            <canvas id="relmap_canvas_foreground" v-bind:class="{'raise-canvas':hovered_character}"
+                ref="relmap_canvas_foreground" width="400" height="400"></canvas>
+            <div id="buttons">
+                <div class="button">
+                    <a href="#filters"> <i class="fas fa-filter"></i></a>
+                </div>
+                <div id="button-search" class="button" v-if="visibility.search_button" v-on:click="onClickSearchButton">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div id="button-search-box" class="button" v-if="visibility.search_box" v-on:focusout="onSearchBoxExit"
+                    v-on:input="onSearchBoxChange">
+                    <input ref="search_box" class="box-shadowed" type="text" />
+                </div>
             </div>
-            <div id="button-layout-round" class="button">
-                <i class="fas fa-spinner"></i>
+            <!--char-info-item-->
+            <div class="char-info box-shadowed"
+                v-bind:class="{'secondary_hover':hovered_character in c.relationship_data}" v-for="c in characters"
+                v-bind:style="'left:'+c.loc.x+'px;top:'+c.loc.y+'px'" v-if="!c.filtered"
+                v-on:mouseover="onCharInfoMouseOver(c.id)" v-on:mouseleave="onCharInfoMouseLeave">
+                <a v-bind:href="'#char/detail/'+c.id">
+                    <div class="info">
+                        <h1 v-html="c.name"></h1>
+                        <div class="tags">
+                            <div v-bind:class="'tag box-shadowed '+ tag" v-for="tag in c.tags">
+                                <p>{{tag}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <div class="rel" v-if="hovered_character in c.relationship_data">
+                    <ul>
+                        <li v-for="item in c.relationship_data[hovered_character]">
+                            <span>{{ item }}</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div id="button-layout-square" class="button">
-                <i class="fas fa-th"></i>
+            <!--/char-info-item-->
+        </div>
+
+        <div id="overlay" v-on:click="hideOverlay" v-if="visibility.overlay">
+            <div id="modal">
+                <div id="character-detail" v-if="visibility.character_detail">
+                    <h1 v-html="selected_character.name"></h1>
+
+
+                    <hr />
+                    <img class="portrait" v-if="selected_character.id"
+                        v-bind:src="'assets/img/portrait-med-'+selected_character.id+'.png'" />
+                    <hr />
+
+                    <div class="tags">
+                        <div v-for="tag in selected_character.tags" v-bind:class="'tag box-shadowed '+tag">
+                            <p>{{ tag }}</p>
+                        </div>
+                    </div>
+
+                    <h2>Info</h2>
+
+                    <ul>
+                        <li v-for="item in selected_character.info">
+                            <span>{{ item }}</span>
+                        </li>
+                    </ul>
+
+                    <h2>Description</h2>
+
+                    <p>{{ selected_character.description }}</p>
+
+                    <h2>History</h2>
+
+                    <ul>
+                        <li v-for="item in selected_character.history">
+                            <h3>{{ item.date }}</h3>
+                            <ul>
+                                <li v-for="note in item.notes"><span>{{ note }}</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="filter-settings" v-if="visibility.filter_settings">
+                    <h1>Global</h1>
+                    <div class="filter-section">
+                        <div class="filter-item" v-on:click="onToggledFilter('select_all', $event)">
+                            <div class="tag">
+                                <i class="fas fa-check-square"></i>
+                            </div>
+                            <span>Select All</span>
+                        </div>
+                        <div class="filter-item" v-on:click="onToggledFilter('select_none', $event)">
+                            <div class="tag">
+                                <i class="fas fa-square"></i>
+                            </div>
+                            <span>Select None</span>
+                        </div>
+                    </div>
+                    <h1>Tags</h1>
+                    <div class="filter-section">
+                        <div v-for="tag in tags" class="filter-item" v-bind:class="{'filtered':tag.excluded}"
+                            v-on:click="onToggledFilter(tag.id,$event)">
+                            <div v-bind:class="'tag box-shadowed '+tag.id">
+                            </div>
+                            <span>{{ tag.id }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="overlay">
-        <div id="modal">
-        </div>
+
     </div>
     <div>
         <script src="assets/js/mustache.min.js"></script>
         <script src="assets/js/zepto.min.js"></script>
+        <script src="assets/js/vue.min.js"></script>
         <script src="assets/js/index.js"></script>
     </div>
+
 </body>
 
 </html>

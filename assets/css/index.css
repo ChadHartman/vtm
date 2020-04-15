@@ -9,13 +9,25 @@ html, body, p {
     font-family: sans-serif;
 }
 
-#rel-map {
+#relmap {
     position: fixed;
     left: 0;
     bottom: 0;
     right: 0;
     top: 0;
     background-image: linear-gradient(to bottom right, black, #500);
+}
+
+#relmap canvas {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+}
+
+.raise-canvas {
+    z-index: 4;
 }
 
 .box-shadowed {
@@ -32,7 +44,7 @@ html, body, p {
 
 .button {
     float: right;
-    width: 22px;
+    min-width: 22px;
     height: 22px;
     cursor: pointer;
     margin-left: 5px;
@@ -46,42 +58,67 @@ html, body, p {
 
 /* </buttons> */
 
+/* <search> */
+
+#button-search-box input {
+    width: 256px;
+    background-color: transparent;
+    border-radius: 5px;
+    border-color: #999;
+    color: #999;
+    font-size: 18pt;
+}
+
+/* </search> */
+
 /* <char-info> */
 
 .char-info {
     position: absolute;
     border: 1px solid black;
-    min-width: 128px;
-    height: 64px;
-    border-radius: 5px;
-    background-image: linear-gradient(#500, #300);
     z-index: 1;
-    padding: 5px;
     cursor: pointer;
+    width: 128px;
+}
+
+.char-info .info {
+    border-radius: 5px;
+    padding: 5px;
+    min-height: 64px;
+    background-image: linear-gradient(#500, #300);
+}
+
+.char-info .rel {
+    background-color: grey;
+    font-size: 10pt;
+    overflow-wrap: anywhere;
+}
+
+.char-info .rel ul {
+    margin: 0;
+    padding-left: 5px;
+    list-style-position: inside;
 }
 
 .char-info a {
     text-decoration: none;
 }
 
+.char-info.secondary_hover {
+    z-index: 5;
+}
+
 .char-info:hover {
-    z-index: 2;
+    z-index: 10;
 }
 
 .char-info h1 {
     text-align: center;
-    font-size: 14pt;
-    margin: 2px 0 0 0;
+    font-size: 12pt;
+    margin: 2px 0 4px 0;
     padding: 0;
     color: #999;
     text-shadow: 0 0 10px black;
-}
-
-.char-info .tags {
-    position: absolute;
-    left: 0;
-    bottom: 7px;
-    right: 0;
 }
 
 /* </char-info> */
@@ -170,12 +207,13 @@ html, body, p {
     left: 0;
     bottom: 0;
     right: 0;
+    z-index: 100;
     background-color: rgba(0, 0, 0, 0.5)
 }
 
 #modal {
     position: relative;
-    z-index: 1;
+    z-index: 101;
     background-image: linear-gradient(#500, #300);
     margin: 64px auto auto auto;
     width: 512px;

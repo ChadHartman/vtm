@@ -44,7 +44,7 @@
         "tags": ["camarilla", "scourge", "gangrel", "player"]
     }, {
         "id": "clarence",
-        "name": "Clarence Curry &#9794;",
+        "name": "Clarence <br/> Curry &#9794;",
         "tags": ["camarilla", "nosferatu", "player"]
     }, {
         "id": "griffin",
@@ -77,5 +77,20 @@
         "id": "kane",
         "name": "Kane &#9794;",
         "tags": ["camarilla", "nosferatu", "sheriff"]
+    },
+    {
+        "id": "maggart",
+        "name": "Maggart &#9792;",
+        "tags": ["camarilla", "nosferatu"]
+    },
+    {
+        "id": "dante",
+        "name": "Dante &#9794;",
+        "tags": ["camarilla", "nosferatu"]
+    },
+    {
+        "id": "joshua",
+        "name": "Joshua &#9794;",
+        "tags": ["camarilla", "nosferatu"]
     }
 ]

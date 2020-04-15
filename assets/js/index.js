@@ -1,489 +1,288 @@
-"use strict"
+"use strict";
 
 let app = {
 
-    log: {
-
-        LOG_LEVEL: 1,
-        DEBUG: 1,
-        VERBOSE: 0,
-
-        debug: (message) => {
-
-            if (app.log.LOG_LEVEL <= app.log.DEBUG) {
-                console.debug(message + "\n" + new Error().stack.split("\n")[2]);
-            }
-        },
-
-        verbose: (message) => {
-
-            if (app.log.LOG_LEVEL <= app.log.VERBOSE) {
-                console.debug(message + "\n" + new Error().stack.split("\n")[2]);
-            }
-        },
+    route: {
+        root: /^#?(\?.*)?$/,
+        charDetail: /^#char\/detail\/\w+(\?.*)?$/,
+        filters: /^#filters(\?.*)?$/
     },
 
-    constants: {
-        REL_OFFSET_X: 50,
-        REL_OFFSET_Y: 50
-    },
-
-    util: {
-        avg: (nums) => {
-            let sum = 0;
-            for (let num of nums) {
-                sum += num;
+    SearchFilterer: class SearchFilterer {
+        constructor() {
+            this.terms = [];
+            let search = new app.QueryParams().search;
+            if (search) {
+                for (let term of search.split(",")) {
+                    if (term) {
+                        this.terms.push(this.normalize(term));
+                    }
+                }
             }
-            return sum / nums.length;
         }
 
-    },
+        normalize(text) {
+            if (text) {
+                return text.toLowerCase().replace(/[^a-z]/g, "");
+            }
+            return "";
+        }
 
-    filter: {
-
-        // Only filtered if all tags are missing
-        isFiltered: (character) => {
-
-            let filters = app.filter.getFilters();
-
-            if (filters.length === 0) {
+        isFiltered(name) {
+            if (this.terms.length === 0) {
                 return false;
             }
 
-            for (let tag of character.tags) {
-                if (!filters.includes(tag)) {
+            for (let term of this.terms) {
+                if (this.normalize(name).indexOf(term) !== -1) {
                     return false;
                 }
             }
 
             return true;
-        },
-
-        getFilters: () => {
-            let filters = app.route.query.parse().get("filter");
-            if (filters) {
-                return filters.split(",");
-            }
-            return [];
-        },
-
-
-        setFilters: (filters) => {
-            let params = app.route.query.parse();
-            params.set("filter", filters.join(","));
-            app.route.query.update(params);
-        },
-
-        update: () => {
-            $(".filter-item span").removeClass("filtered");
-
-            for (let filter of app.filter.getFilters()) {
-                $(`.filter-item[data-tag="${filter}"] span`).addClass("filtered");
-            }
-        },
-
-        show: () => {
-
-            if (!app.template.ready() || !app.model.ready()) {
-                app.log.verbose("Unable to show; still fetching resources.");
-                return;
-            }
-
-            app.log.verbose("Display Filters called.");
-
-            let overlay = $("#overlay");
-
-            if (overlay.css("display") === "none") {
-                app.log.verbose("Unhiding overlay; and populating.");
-                overlay.show()
-                    .find("#modal")
-                    .html(app.template.render("filters", app.model))
-                    .find(".filter-item").each((i, e) => {
-                        let elem = $(e);
-                        elem.on("click", {
-                            filter: elem.attr("data-tag")
-                        }, app.filter.toggle);
-                    });
-            }
-
-            app.filter.update();
-        },
-
-        toggle: (e) => {
-
-            let filter = e.data.filter;
-            let filters = app.filter.getFilters();
-
-            switch (filter) {
-
-                case "select_none":
-                    app.log.debug("Filtering all.");
-                    filters = [];
-                    filters.push(...app.model.tags);
-                    break;
-
-                case "select_all":
-                    app.log.debug("Filtering none.");
-                    filters = [];
-                    break;
-
-                default:
-                    if (filters.includes(filter)) {
-                        app.log.debug(`Removing ${filter} filter`);
-                        filters.splice(filters.indexOf(filter), 1);
-                    } else {
-                        app.log.debug(`Filtering ${filter}`);
-                        filters.push(filter);
-                    }
-                    break;
-            }
-
-            app.filter.setFilters(filters);
         }
     },
 
-    relMap: {
+    ExclusionFilterer: class ExclusionFilterer {
 
-        getCanvas: () => {
-            return $("#rel-map canvas").get(0);
-        },
+        constructor() {
+            let exclude = new app.QueryParams().exclude;
+            this.excludedTags = exclude ? exclude.split(",") : [];
+        }
 
-        reset: () => {
-            let mapContainer = $("#rel-map");
-            let canvas = app.relMap.getCanvas();
-            canvas.width = mapContainer.width();
-            canvas.height = mapContainer.height();
-
-            mapContainer.find(".char-info, .rel-info").remove();
-        },
-
-        drawRelationships: (ctx, lineWidth, strokeStyle, relationships) => {
-
-            ctx.lineWidth = lineWidth;
-            ctx.strokeStyle = strokeStyle;
-
-            ctx.beginPath();
-
-            for (let rel of relationships) {
-                let startChar = app.model.getChar(rel.characters[0]);
-                let stopChar = app.model.getChar(rel.characters[1]);
-
-                ctx.moveTo(
-                    startChar.loc.x + app.constants.REL_OFFSET_X,
-                    startChar.loc.y + app.constants.REL_OFFSET_Y);
-                ctx.lineTo(
-                    stopChar.loc.x + app.constants.REL_OFFSET_X,
-                    stopChar.loc.y + app.constants.REL_OFFSET_Y);
-            }
-
-            ctx.stroke();
-        },
-
-        addRelationshipElems: () => {
-
-            let mapContainer = $("#rel-map");
-
-            // Check filters
-            let relationships = [];
-            for (let rel of app.model.relationships) {
-                let startChar = app.model.getChar(rel.characters[0]);
-                let stopChar = app.model.getChar(rel.characters[1]);
-
-                if (!app.filter.isFiltered(startChar) &&
-                    !app.filter.isFiltered(stopChar)) {
-
-                    relationships.push(rel);
-                    mapContainer.append(
-                        $(app.template.render("rel-info", rel))
-                        .css("left", Math.round(app.util.avg([
-                            startChar.loc.x + app.constants.REL_OFFSET_X - 10,
-                            stopChar.loc.x + app.constants.REL_OFFSET_X - 10
-                        ])))
-                        .css("top", Math.round(app.util.avg([
-                            startChar.loc.y + app.constants.REL_OFFSET_Y - 10,
-                            stopChar.loc.y + app.constants.REL_OFFSET_Y - 10
-                        ]))));
+        isExcluded(character) {
+            for (let tag of character.tags) {
+                if (!this.excludedTags.includes(tag)) {
+                    return false;
                 }
             }
 
-            if (relationships.length === 0) {
-                return;
-            }
-
-            let ctx = $("#rel-map canvas").get(0).getContext("2d");
-
-            app.relMap.drawRelationships(ctx, 7, "black", relationships);
-            app.relMap.drawRelationships(ctx, 5, "#999", relationships);
-        },
-
-        addCharacterElems: () => {
-
-            let mapContainer = $("#rel-map");
-            let characters = app.model.getVisibleChars();
-            let layout = app.layout.get(characters.length);
-            let ix = layout.x.entries();
-            let iy = layout.y.entries();
-
-            for (let character of characters) {
-
-                character.loc = {
-                    x: ix.next().value[1],
-                    y: iy.next().value[1]
-                };
-
-                mapContainer.append(
-                    $(app.template.render("char-info", character))
-                    .css("left", character.loc.x)
-                    .css("top", character.loc.y));
-            }
-        },
-
-        populate: () => {
-
-            if (!app.model.ready() || !app.template.ready()) {
-                // Content is still loading
-                return;
-            }
-
-            app.relMap.reset();
-            app.relMap.addCharacterElems();
-            app.relMap.addRelationshipElems();
-
-            app.log.verbose("Rendered relmap.")
+            return true;
         }
     },
 
-    template: {
+    QueryParams: class QueryParams {
 
-        ready: () => {
-            return app.template.store.req_success === app.template.store.req_attempt;
-        },
-
-        store: {
-            req_attempt: 0,
-            req_success: 0,
-        },
-
-        load: (name) => {
-            ++app.template.store.req_attempt;
-
-            let onLoad = (html) => {
-                app.log.verbose(`Template "${name}" loaded.`);
-                app.template.store[name] = html;
-                ++app.template.store.req_success;
-                app.route.refresh();
-            };
-
-            $.ajax({
-                url: `assets/template/${name}.html`,
-                success: onLoad,
-                dataType: "html"
-            });
-        },
-
-        render: (templateName, data) => {
-
-            if (!(templateName in app.template.store)) {
-                return `Template named "${templateName}" was not found.`;
-            }
-
-            return Mustache.render(
-                app.template.store[templateName],
-                data);
-        }
-    },
-
-    charDetail: {
-
-        show: (id) => {
-
-            if (app.model.characters.length === 0) {
-                app.log.verbose(`app.model.characters not yet populated.`);
+        constructor(hash = location.hash) {
+            if (hash.indexOf("?") === -1) {
                 return;
             }
 
-            let modal = $("#overlay")
-                .show()
-                .find("#modal").empty();
+            let params = new URLSearchParams(hash.split("?")[1]);
 
-            let c = app.model.getChar(id);
-            if (c.detail) {
-                modal.html(app.template.render("char-detail", c));
-            } else {
-                app.model.loadCharacter(id);
+            for (const [key, value] of params) {
+                this[key] = value;
             }
         }
-    },
 
-    model: {
+        commit() {
+            let urlParams = new URLSearchParams();
 
-        req_attempt: 0,
-        req_success: 0,
+            for (const key in this) {
+                if (this[key]) {
+                    urlParams.append(key, this[key]);
+                }
+            }
 
-        ready: () => {
-            return app.model.req_attempt === app.model.req_success;
+            location.hash = (location.hash.indexOf("?") === -1 ?
+                    location.hash :
+                    location.hash.split("?")[0]) +
+                `?${urlParams.toString()}`;
+        }
+    }
+};
+
+app.vue = new Vue({
+
+    el: "#app",
+
+    data: {
+        visibility: {
+            character_detail: false,
+            filter_settings: false,
+            overlay: false,
+            search_box: false,
+            search_button: true
         },
-
+        hovered_character: undefined,
+        selected_character: {},
         characters: [],
         relationships: [],
-        tags: [],
+        tags: []
+    },
 
-        getChar: (id) => {
-            for (let c of app.model.characters) {
-                if (c.id === id) {
-                    return c;
+    methods: {
+
+        wireRelationships() {
+            if (this.$data.characters.length === 0 ||
+                this.$data.relationships.length == 0) {
+                // Data is still loading
+                return;
+            }
+
+            for (let rel of this.$data.relationships) {
+                for (let c of this.$data.characters) {
+                    if (c.id === rel.characters[0]) {
+                        rel.character_start = c;
+                        c.relationship_data[rel.characters[1]] = rel.info;
+                    } else if (c.id === rel.characters[1]) {
+                        rel.character_stop = c;
+                        c.relationship_data[rel.characters[0]] = rel.info;
+                    }
                 }
             }
 
-            throw Error(`Unable to find character "${id}"`);
+            this.drawRelmapCanvas();
         },
 
-        getVisibleChars: () => {
-            let characters = [];
-            for (let c of app.model.characters) {
-                if (!app.filter.isFiltered(c)) {
-                    characters.push(c);
-                }
+        drawRelmapCanvas() {
+
+            if (this.$data.characters.length === 0 ||
+                this.$data.relationships.length === 0) {
+                // Data not yet loaded
+                return;
             }
-            return characters;
-        },
 
-        loadCharacter: (id) => {
+            let draw = (ctx, lineWidth, strokeStyle, isBackground) => {
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = strokeStyle;
+                ctx.beginPath();
 
-            let onLoad = (json) => {
-                app.log.verbose(`Character "${id} loaded.`);
-                ++app.model.req_success;
-                app.model.getChar(id).detail = json;
-                app.route.refresh();
+                for (let rel of this.$data.relationships) {
+
+                    if (rel.character_start.filtered || rel.character_stop.filtered) {
+                        continue;
+                    }
+
+                    let isHovered = rel.character_start.id === this.$data.hovered_character ||
+                        rel.character_stop.id === this.$data.hovered_character;
+
+                    if (isBackground === isHovered) {
+                        // hovered_character relationships get drawn on the foreground canvas
+                        continue;
+                    }
+
+                    let locStart = rel.character_start.loc;
+                    let locStop = rel.character_stop.loc;
+
+                    ctx.moveTo(64 + locStart.x, 32 + locStart.y);
+                    ctx.lineTo(64 + locStop.x, 32 + locStop.y);
+                }
+
+                ctx.stroke();
             };
 
-            ++app.model.req_attempt;
-            $.ajax({
-                url: `assets/data/${id}.json`,
-                success: onLoad,
-                dataType: "json"
-            });
+            let drawCanvas = (isBackground) => {
+                let canvas = isBackground ? this.$refs.relmap_canvas_background : this.$refs.relmap_canvas_foreground;
+                let ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                draw(ctx, 7, "black", isBackground);
+                draw(ctx, 5, "#999", isBackground);
+            };
+
+            drawCanvas(true);
+            drawCanvas(false);
         },
 
-        onCharactersLoad: (json) => {
+        /**
+         * Updates flags and locations for character info elements
+         */
+        updateCharacters() {
 
-            app.log.verbose("Characters loaded.");
+            let searchFilterer = new app.SearchFilterer();
+            let exclusionFilterer = new app.ExclusionFilterer();
 
-            ++app.model.req_success;
+            for (let character of this.$data.characters) {
+                character.filtered = searchFilterer.isFiltered(character.name) ||
+                    exclusionFilterer.isExcluded(character);
+            }
+
+            this.layoutCharactersCircular();
+        },
+
+        onCharactersLoad(json) {
+
+            // Prep chars and grab tags
             let tags = new Set();
             for (let c of json) {
                 for (let tag of c.tags) {
                     tags.add(tag);
                 }
+                c.loc = {
+                    x: 0,
+                    y: 0
+                };
+                c.detail_loaded = false;
+                c.info = [];
+                c.description = "";
+                c.history = [];
+                c.filtered = false;
+                c.relationship_data = {};
             }
-            app.model.tags = Array.from(tags);
-            app.model.characters = json;
-            app.route.refresh();
-        },
 
-        loadCharacters: () => {
-            ++app.model.req_attempt;
-            $.ajax({
-                url: "assets/data/characters.json",
-                success: app.model.onCharactersLoad,
-                dataType: "json"
-            });
-        },
+            // Update tags with query strings
+            let exclusions = new app.ExclusionFilterer().excludedTags;
 
-        onRelationshipsLoad: (json) => {
-
-            app.log.verbose("Relationships loaded.");
-
-            ++app.model.req_success;
-            app.model.relationships = json;
-            app.route.refresh();
-        },
-
-        loadRelationships: () => {
-            ++app.model.req_attempt;
-            $.ajax({
-                url: "assets/data/relationships.json",
-                success: app.model.onRelationshipsLoad,
-                dataType: "json"
-            });
-        }
-    },
-
-    route: {
-
-        query: {
-
-            parse: (s = location.hash) => {
-
-                if (s.indexOf("?") === -1) {
-                    return new URLSearchParams();
-                }
-
-                return new URLSearchParams(s.split("?")[1]);
-            },
-
-            update: (params) => {
-                location.hash = app.route.query.append(location.hash, params);
-            },
-
-            append: (url, params) => {
-
-                if (url.indexOf("?") === -1) {
-                    return url + "?" + params.toString();
-                }
-
-                return url.split("?")[0] + "?" + params.toString();
+            this.$data.tags = [];
+            for (let tag of tags) {
+                this.$data.tags.push({
+                    id: tag,
+                    excluded: exclusions.indexOf(tag) !== -1
+                });
             }
+
+            this.$data.tags.sort((a, b) => a.id > b.id ? 1 : -1);
+            this.$data.characters = json;
+
+            this.wireRelationships();
+            this.updateCharacters();
+            this.refreshRoute();
         },
 
-
-
-        pattern: {
-            root: /^#?(\?.*)?$/,
-            charDetail: /^#char\/detail\/\w+(\?.*)?$/,
-            filters: /^#filters(\?.*)?$/
+        onCharacterDetailLoad(json) {
+            let c = this.$data.selected_character;
+            c.detail_loaded = true;
+            c.info = json.info;
+            c.description = json.description;
+            c.history = json.history;
         },
 
-        toIndex: () => {
-            location.hash = "";
+        onWindowResize() {
+            let container = this.$refs.relmap_container;
+            let backCanvas = this.$refs.relmap_canvas_background;
+            let foreCanvas = this.$refs.relmap_canvas_foreground;
+            backCanvas.width = container.offsetWidth;
+            backCanvas.height = container.offsetHeight;
+            foreCanvas.width = container.offsetWidth;
+            foreCanvas.height = container.offsetHeight;
+            this.updateCharacters();
+            this.drawRelmapCanvas();
         },
 
-        refresh: () => {
-            app.log.verbose("Refresh Called");
-            app.route.onHashChange(new HashChangeEvent("refresh", {
-                newURL: location.hash,
-                oldURL: location.hash
-            }));
-        },
+        onHashChange(e) {
 
-        onHashChange: (e) => {
-
-            let oldParams = app.route.query.parse(e.oldURL);
-            let newParams = app.route.query.parse(e.newURL);
-            if (oldParams.toString().length > 0 && newParams.toString().length === 0) {
-                // The old params need to be migrated over
-                let newHash = e.newURL.indexOf("#") === -1 ? "" : e.newURL.split("#")[1];
-                location.hash = app.route.query.append(newHash, oldParams);
-                app.log.verbose("Migrated params");
+            if (e.oldURL.indexOf("?") !== -1 && e.newURL.indexOf("?") === -1) {
+                // Need to migrate query params
+                //  Set query params will call hash change again
+                new app.QueryParams(e.oldURL).commit();
                 return;
             }
 
-            if (app.route.pattern.root.exec(location.hash)) {
-                app.log.verbose("Route index");
-                $("#overlay").hide();
-                app.relMap.populate();
+            if (app.route.root.exec(location.hash)) {
+                this.$data.visibility.overlay = false;
+                this.$data.visibility.character_detail = false;
+                this.$data.visibility.filter_settings = false;
 
-            } else if (app.route.pattern.charDetail.exec(location.hash)) {
-                let id = location.hash.substr(location.hash.lastIndexOf("/") + 1);
-                if (id.indexOf("?") !== -1) {
-                    id = id.split("?")[0];
-                }
-                app.log.verbose(`Route detail "${id}"`);
-                app.charDetail.show(id);
+            } else if (app.route.charDetail.exec(location.hash)) {
+                this.$data.visibility.overlay = true;
+                this.$data.visibility.character_detail = true;
+                this.$data.visibility.filter_settings = false;
+                this.prepareCharacterDetailView();
 
-            } else if (app.route.pattern.filters.exec(location.hash)) {
-                app.log.verbose("Route filters");
-                app.filter.show();
+            } else if (app.route.filters.exec(location.hash)) {
+                this.$data.visibility.overlay = true;
+                this.$data.visibility.character_detail = false;
+                this.$data.visibility.filter_settings = true;
 
             } else {
                 console.error(`Unkown path "${location.hash}".`);
@@ -491,158 +290,169 @@ let app = {
             }
         },
 
-        init: () => {
-            window.addEventListener('hashchange', app.route.onHashChange, false);
-            app.route.refresh();
-        }
-    },
+        layoutCharactersCircular() {
 
-    layout: {
-
-        /**
-            f1| n2-4 | c4
-            	* *
-            	* *
-
-            f2| n5-8 | c8
-            	 * * *
-            	 *   *
-            	 * * *
-
-            f3| n9-12 | c12
-            	* * * *
-            	*     *
-            	*     *
-                * * * *
-            fn | (((n-1)*4)+1)-(n*4) | (n*4)
-        */
-        getSquare: (size) => {
-
-            let canvas = app.relMap.getCanvas();
-            let sideLen = canvas.width < canvas.height ? canvas.width : canvas.height;
-
-            // Seeded with init pos centered
-            let xList = [Math.round((canvas.width - sideLen) / 2) + 50];
-            let yList = [Math.round((canvas.height - sideLen) / 2) + 50];
-
-            // Use to determine size of square
-            let factor = Math.ceil(size / 4.0);
-
-            // factor + 1 because a side has f + 1 elements
-            let offset = Math.round(sideLen / (factor + 1));
-
-            // Subcounter used to track which side
-            let si = 0;
-            let side = 0;
-            let i = 0;
-
-            // Skip first one
-            for (i = 1; i < size; i++) {
-
-                switch (side) {
-                    case 0:
-                        // Go right
-                        xList.push(xList[i - 1] + offset);
-                        yList.push(yList[i - 1]);
-                        break;
-
-                    case 1:
-                        // Go down
-                        xList.push(xList[i - 1]);
-                        yList.push(yList[i - 1] + offset);
-                        break;
-
-                    case 2:
-                        // Go left
-                        xList.push(xList[i - 1] - offset);
-                        yList.push(yList[i - 1]);
-                        break;
-
-                    case 3:
-                        // Go up
-                        xList.push(xList[i - 1]);
-                        yList.push(yList[i - 1] - offset);
-                        break;
-                }
-
-                if (++si === factor) {
-                    // Turned a corner
-                    si = 0;
-                    ++side;
+            let characters = [];
+            for (let character of this.$data.characters) {
+                if (!character.filtered) {
+                    characters.push(character);
                 }
             }
 
-            return {
-                x: xList,
-                y: yList
-            };
-        },
-
-        getCircular: (size) => {
-
-            let canvas = app.relMap.getCanvas();
+            let canvas = this.$refs.relmap_canvas_background;
             let cx = Math.round(canvas.width / 2.0);
             let cy = Math.round(canvas.height / 2.0);
-            let aStep = Math.PI * 2 / size;
+            let aStep = Math.PI * 2 / characters.length;
             let r = (cx < cy ? cx : cy) / 1.3;
-            let xList = [];
-            let yList = [];
-
-            for (let i = 0; i < size; i++) {
+            for (let i = 0; i < characters.length; i++) {
+                let loc = characters[i].loc;
                 let a = i * aStep;
-                xList.push(Math.round(cx + r * Math.cos(a) - 64));
-                yList.push(Math.round(cy + r * Math.sin(a) - 32));
+                loc.x = Math.round(cx + r * Math.cos(a) - 64);
+                loc.y = Math.round(cy + r * Math.sin(a) - 32);
+            }
+        },
+
+        hideOverlay() {
+            location.hash = "";
+        },
+
+        prepareCharacterDetailView() {
+
+            if (this.$data.characters.length === 0) {
+                // Data hasn't loaded yet
+                return;
             }
 
-            return {
-                x: xList,
-                y: yList
-            };
+            let id = location.hash.substr("#char/detail/".length);
+            if (id.indexOf("?") !== -1) {
+                id = id.split("?")[0];
+            }
+
+            for (let c of this.$data.characters) {
+                if (c.id === id) {
+                    this.$data.selected_character = c;
+                    break;
+                }
+            }
+
+            if (!this.$data.selected_character.detail_loaded) {
+                $.get(`assets/data/${id}.json`, this.onCharacterDetailLoad);
+            }
         },
 
-        get: (size) => {
-            return app.layout.getCircular(size);
-            // return app.layout.getSquare(size);
+        refreshRoute() {
+            this.onHashChange(new HashChangeEvent("refresh", {
+                newURL: location.toString(),
+                oldURL: location.toString()
+            }));
         },
 
-        init: () => {
-            $("#button-layout-square").click(() => {
-                $("#button-layout-square").hide();
-                $("#button-layout-round").show();
-                app.layout.get = app.layout.getSquare;
-                app.route.refresh();
+        onToggledFilter(tag, e) {
+
+            // Stop overlay from picking up click
+            e.stopPropagation();
+
+            let exclusions = [];
+
+            switch (tag) {
+
+                case "select_none":
+                    for (let t of this.$data.tags) {
+                        exclusions.push(t.id);
+                        t.excluded = true;
+                    }
+                    break;
+
+                case "select_all":
+                    for (let t of this.$data.tags) {
+                        t.excluded = false;
+                    }
+                    break;
+
+                default:
+                    for (let t of this.$data.tags) {
+                        if (tag === t.id) {
+                            t.excluded = !t.excluded;
+                        }
+
+                        if (t.excluded) {
+                            exclusions.push(t.id);
+                        }
+                    }
+                    break;
+            }
+
+            let params = new app.QueryParams();
+
+            if (exclusions.length === 0) {
+                delete params.exclude;
+            } else {
+                params.exclude = exclusions.join(",");
+            }
+
+            params.commit();
+            this.updateCharacters();
+            this.drawRelmapCanvas();
+        },
+
+        onClickSearchButton() {
+            this.$data.visibility.search_button = false;
+            this.$data.visibility.search_box = true;
+
+            this.$nextTick(() => {
+                this.$refs.search_box.value = new app.QueryParams().search || "";
+                this.$refs.search_box.focus();
             });
+        },
 
-            $("#button-layout-round").click(() => {
-                $("#button-layout-square").show();
-                $("#button-layout-round").hide();
-                app.layout.get = app.layout.getCircular;
-                app.route.refresh();
-            }).hide();
+        onSearchBoxExit() {
+            this.$data.visibility.search_button = true;
+            this.$data.visibility.search_box = false;
+        },
+
+        onSearchBoxChange() {
+            let search = this.$refs.search_box.value;
+            let params = new app.QueryParams();
+            if (search) {
+                params.search = search;
+            } else {
+                delete params.search;
+            }
+            params.commit();
+            this.updateCharacters();
+            this.drawRelmapCanvas();
+        },
+
+        onRelationshipsLoad(json) {
+            this.$data.relationships = json;
+            this.wireRelationships();
+        },
+
+        onCharInfoMouseOver(cid) {
+            this.$data.hovered_character = cid;
+            this.drawRelmapCanvas();
+        },
+
+        onCharInfoMouseLeave() {
+            this.$data.hovered_character = undefined;
+            this.drawRelmapCanvas();
         }
     },
 
-    start: () => {
-        app.log.verbose("Start begin.");
+    created() {
+        window.addEventListener("resize", this.onWindowResize);
+        window.addEventListener('hashchange', this.onHashChange);
+    },
 
-        app.template.load("char-detail");
-        app.template.load("char-info");
-        app.template.load("filters");
-        app.template.load("rel-info");
-        app.model.loadCharacters();
-        app.model.loadRelationships();
-        app.layout.init();
-        app.route.init();
+    mounted() {
+        $.get("assets/data/characters.json", this.onCharactersLoad);
+        $.get("assets/data/relationships.json", this.onRelationshipsLoad);
+        this.onWindowResize();
+        this.refreshRoute();
+    },
 
-        window.onresize = app.route.refresh;
-
-        $("#overlay")
-            .hide()
-            .click(app.route.toIndex)
-            .find("#modal").click((e) => e.stopPropagation());
-
-        app.log.verbose("Start complete.");
-    }
-};
-
-$(document).ready(app.start);
+    destroyed() {
+        window.removeEventListener("resize", this.onWindowResize);
+        window.removeEventListener('hashchange', this.onHashChange);
+    },
+});
