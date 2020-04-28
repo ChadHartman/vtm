@@ -78,4 +78,44 @@
     "info": [
         "Alice told Amaroq she thought the Anarchs are responsible for the assassination attempts."
     ]
+}, {
+    "characters": [
+        "angelina_forbes",
+        "griffin"
+    ],
+    "info": [
+        "Angelina is one of Griffin's ghouls."
+    ]
+}, {
+    "characters": [
+        "nelo",
+        "tara"
+    ],
+    "info": [
+        "Nelo is one of Tara's servants."
+    ]
+}, {
+    "characters": [
+        "cero",
+        "tara"
+    ],
+    "info": [
+        "Cero is one of Tara's servants."
+    ]
+}, {
+    "characters": [
+        "demetria",
+        "trevon_bryant"
+    ],
+    "info": [
+        "Trevon Bryant is one of Demetria's ghouls."
+    ]
+}, {
+    "characters": [
+        "demetria",
+        "alfie_richards"
+    ],
+    "info": [
+        "Alfie Richards is one of Demetria's ghouls."
+    ]
 }]

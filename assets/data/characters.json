@@ -91,6 +91,35 @@
     {
         "id": "joshua",
         "name": "Joshua &#9794;",
-        "tags": ["camarilla", "nosferatu"]
+        "tags": ["camarilla", "nosferatu"],
+        "visible": false
+    },
+    {
+        "id": "nelo",
+        "name": "Nelo  &#9794;",
+        "tags": ["camarilla", "tremere"],
+        "visible": false
+    },
+    {
+        "id": "alfie_richards",
+        "name": "Alfie Richards  &#9794;",
+        "tags": ["camarilla", "ghoul"]
+    },
+    {
+        "id": "angelina_forbes",
+        "name": "Angelina Forbes &#9792;",
+        "tags": ["camarilla", "ghoul"],
+        "visible": false
+    },
+    {
+        "id": "cero",
+        "name": "Cero &#9794;",
+        "tags": ["camarilla", "tremere"],
+        "visible": false
+    },
+    {
+        "id": "trevon_bryant",
+        "name": "Trevon Bryant &#9794;",
+        "tags": ["camarilla", "ghoul"]
     }
 ]
