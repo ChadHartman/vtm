@@ -5,5 +5,10 @@
         "Patriotic"
     ],
     "description": "Aryan and proud of it.",
-    "portrait": "portrait-med-franz"
+    "history": [{
+        "date": "2020-03-28",
+        "notes": [
+            "Killed Alfie Richards."
+        ]
+    }]
 }

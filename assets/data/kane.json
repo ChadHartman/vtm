@@ -5,5 +5,11 @@
         "Seriously Friendly"
     ],
     "description": "Quick to a smile; and quick to draw. This deadly sheriff is not one to trifle with",
-    "portrait": "portrait-med-kane"
+    "history": [{
+        "date": "2020-03-28",
+        "notes": [
+            "Created a posse with Amaroq's Coiterie to execute a blood hunt against Demetria.",
+            "Executed Demetria."
+        ]
+    }]
 }

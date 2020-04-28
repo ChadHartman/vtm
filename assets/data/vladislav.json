@@ -5,5 +5,10 @@
         "Haughty"
     ],
     "description": "Presents an air of \"Satan's gift to humanity\".",
-    "portrait": "portrait-med-vladislav"
+    "history": [{
+        "date": "2020-03-28",
+        "notes": [
+            "Killed Trevon Bryant."
+        ]
+    }]
 }

@@ -6,5 +6,10 @@
         "Passionate"
     ],
     "description": "Passonately fierce emissary of the Southern San Diego Anarchs.",
-    "portrait": "portrait-med-aleron"
+    "history": [{
+        "date": "2020-03-28",
+        "notes": [
+            "Gifted the players with vials of Jonestown Kool Aide."
+        ]
+    }]
 }

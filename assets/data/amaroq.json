@@ -5,11 +5,15 @@
         "Samurai Eskimo"
     ],
     "description": "Stocky, deliberate, and slow to anger.",
-    "portrait": "portrait-med-amaroq",
     "history": [{
         "date": "2020-03-27",
         "notes": [
-            "Became Scourge of San Diego Camarilla"
+            "Became Scourge of San Diego Camarilla."
+        ]
+    }, {
+        "date": "2020-03-28",
+        "notes": [
+            "Aided Kane in carrying out the Blood hunt against Demetria."
         ]
     }]
 }

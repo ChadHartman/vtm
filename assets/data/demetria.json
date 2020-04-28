@@ -6,5 +6,16 @@
         "Regal"
     ],
     "description": "Well dressed, and moves with purpose.",
-    "portrait": "portrait-med-demetria"
+    "history": [{
+        "date": "2020-03-04",
+        "notes": [
+            "Compelled Dante to attack Prince Tara."
+        ]
+    }, {
+        "date": "2020-03-28",
+        "notes": [
+            "Compelled Dante to attack Amaroq's coiterie.",
+            "Was executed by Kane."
+        ]
+    }]
 }

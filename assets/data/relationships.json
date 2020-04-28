@@ -118,4 +118,68 @@
     "info": [
         "Alfie Richards is one of Demetria's ghouls."
     ]
+}, {
+    "characters": [
+        "dante",
+        "alfie_richards"
+    ],
+    "info": [
+        "Alfie Richards attacked Dante on 2 occasions and brought him to Demetria."
+    ]
+}, {
+    "characters": [
+        "dante",
+        "trevon_bryant"
+    ],
+    "info": [
+        "Trevon Bryant attacked Dante on 2 occasions and brought him to Demetria."
+    ]
+}, {
+    "characters": [
+        "vladislav",
+        "alfie_richards"
+    ],
+    "info": [
+        "Vladislav killed Alfie Richards."
+    ]
+}, {
+    "characters": [
+        "kane",
+        "amaroq"
+    ],
+    "info": [
+        "Helped Kane in the Blood Hunt against Demetria."
+    ]
+}, {
+    "characters": [
+        "demetria",
+        "amaroq"
+    ],
+    "info": [
+        "Helped Kane in the Blood Hunt against Demetria."
+    ]
+}, {
+    "characters": [
+        "demetria",
+        "kane"
+    ],
+    "info": [
+        "Demetria was killed by Kane in a Blood Hunt."
+    ]
+}, {
+    "characters": [
+        "franz",
+        "alfie_richards"
+    ],
+    "info": [
+        "Franz killed Alfie Richards."
+    ]
+}, {
+    "characters": [
+        "tara",
+        "demetria"
+    ],
+    "info": [
+        "Demetria attempted to have Tara killed so a Ventrue will ascend to the Princehood."
+    ]
 }]

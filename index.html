@@ -20,6 +20,14 @@
                 <div class="button">
                     <a href="#filters"> <i class="fas fa-filter"></i></a>
                 </div>
+                <div class="button" v-if="!visibility.show_hidden" v-on:click="setHiddenCharacterVisibility(true)">
+                    <i class="fas fa-eye"></i>
+                    <p>Show Hidden Characters</p>
+                </div>
+                <div class="button" v-if="visibility.show_hidden" v-on:click="setHiddenCharacterVisibility(false)">
+                    <i class="fas fa-eye-slash"></i>
+                    <p>Hide Hidden Characters</p>
+                </div>
                 <div id="button-search" class="button" v-if="visibility.search_button" v-on:click="onClickSearchButton">
                     <i class="fas fa-search"></i>
                 </div>
@@ -27,6 +35,7 @@
                     v-on:input="onSearchBoxChange">
                     <input ref="search_box" class="box-shadowed" type="text" />
                 </div>
+
             </div>
             <!--char-info-item-->
             <div class="char-info box-shadowed"
@@ -62,7 +71,7 @@
 
                     <hr />
                     <img class="portrait" v-if="selected_character.id"
-                        v-bind:src="'assets/img/portrait-med-'+selected_character.id+'.png'" />
+                        v-bind:src="'assets/img/portrait/'+selected_character.id+'.png'" />
                     <hr />
 
                     <div class="tags">

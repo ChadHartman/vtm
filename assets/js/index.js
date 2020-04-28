@@ -43,6 +43,26 @@ let app = {
         }
     },
 
+    /**
+     * Determines whether to show a hidden character
+     */
+    HiddenFilterer: class HiddenFilterer {
+
+        constructor() {
+            this.show_hidden = new app.QueryParams().show_hidden;
+        }
+
+        isFiltered(character) {
+
+            if (this.show_hidden) {
+                // When showing hidden we don't care whether the character is hidden or not
+                return false;
+            }
+
+            return ("visible" in character) && !character.visible;
+        }
+    },
+
     ExclusionFilterer: class ExclusionFilterer {
 
         constructor() {
@@ -50,7 +70,7 @@ let app = {
             this.excludedTags = exclude ? exclude.split(",") : [];
         }
 
-        isExcluded(character) {
+        isFiltered(character) {
             for (let tag of character.tags) {
                 if (!this.excludedTags.includes(tag)) {
                     return false;
@@ -102,7 +122,8 @@ app.vue = new Vue({
             filter_settings: false,
             overlay: false,
             search_box: false,
-            search_button: true
+            search_button: true,
+            show_hidden: false
         },
         hovered_character: undefined,
         selected_character: {},
@@ -112,6 +133,20 @@ app.vue = new Vue({
     },
 
     methods: {
+
+        setHiddenCharacterVisibility(showHidden) {
+            let params = new app.QueryParams();
+
+            if (showHidden) {
+                params.show_hidden = true;
+            } else {
+                delete params.show_hidden;
+            }
+
+            params.commit();
+
+            this.updateCharacters();
+        },
 
         wireRelationships() {
             if (this.$data.characters.length === 0 ||
@@ -176,7 +211,7 @@ app.vue = new Vue({
                 let canvas = isBackground ? this.$refs.relmap_canvas_background : this.$refs.relmap_canvas_foreground;
                 let ctx = canvas.getContext("2d");
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                draw(ctx, 7, "black", isBackground);
+                draw(ctx, 10, "black", isBackground);
                 draw(ctx, 5, "#999", isBackground);
             };
 
@@ -191,19 +226,17 @@ app.vue = new Vue({
 
             let searchFilterer = new app.SearchFilterer();
             let exclusionFilterer = new app.ExclusionFilterer();
+            let hiddenFilter = new app.HiddenFilterer();
 
             for (let character of this.$data.characters) {
-
-                if ("visible" in character && !character.visible) {
-                    character.filtered = true;
-                    continue;
-                }
-
-                character.filtered = searchFilterer.isFiltered(character.name) ||
-                    exclusionFilterer.isExcluded(character);
+                character.filtered =
+                    hiddenFilter.isFiltered(character) ||
+                    searchFilterer.isFiltered(character.name) ||
+                    exclusionFilterer.isFiltered(character);
             }
 
             this.layoutCharactersCircular();
+            this.drawRelmapCanvas();
         },
 
         onCharactersLoad(json) {
@@ -239,6 +272,7 @@ app.vue = new Vue({
 
             this.$data.tags.sort((a, b) => a.id > b.id ? 1 : -1);
             this.$data.characters = json;
+            this.$data.characters.sort((a, b) => a.id > b.id ? 1 : -1);
 
             this.wireRelationships();
             this.updateCharacters();
@@ -262,7 +296,6 @@ app.vue = new Vue({
             foreCanvas.width = container.offsetWidth;
             foreCanvas.height = container.offsetHeight;
             this.updateCharacters();
-            this.drawRelmapCanvas();
         },
 
         onHashChange(e) {
@@ -273,6 +306,9 @@ app.vue = new Vue({
                 new app.QueryParams(e.oldURL).commit();
                 return;
             }
+
+            let params = new app.QueryParams();
+            this.$data.visibility.show_hidden = params.show_hidden || false;
 
             if (app.route.root.exec(location.hash)) {
                 this.$data.visibility.overlay = false;
@@ -398,7 +434,6 @@ app.vue = new Vue({
 
             params.commit();
             this.updateCharacters();
-            this.drawRelmapCanvas();
         },
 
         onClickSearchButton() {
@@ -426,7 +461,6 @@ app.vue = new Vue({
             }
             params.commit();
             this.updateCharacters();
-            this.drawRelmapCanvas();
         },
 
         onRelationshipsLoad(json) {

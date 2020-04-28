@@ -118,3 +118,7 @@
 .tag.sheriff:before {
     content: "\f441";
 }
+
+.tag.dead:before {
+    content: "\f714";
+}

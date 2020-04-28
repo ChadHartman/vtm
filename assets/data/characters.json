@@ -21,7 +21,8 @@
     }, {
         "id": "demetria",
         "name": "Demetria &#9792;",
-        "tags": ["camarilla", "ventrue", "primogen"]
+        "tags": ["camarilla", "ventrue", "dead"],
+        "visible": false
     }, {
         "id": "edward",
         "name": "Edward &#9794;",
@@ -45,7 +46,8 @@
     }, {
         "id": "clarence",
         "name": "Clarence <br/> Curry &#9794;",
-        "tags": ["camarilla", "nosferatu", "player"]
+        "tags": ["camarilla", "nosferatu", "player"],
+        "visible": false
     }, {
         "id": "griffin",
         "name": "Griffin &#9794;",
@@ -86,7 +88,8 @@
     {
         "id": "dante",
         "name": "Dante &#9794;",
-        "tags": ["camarilla", "nosferatu"]
+        "tags": ["camarilla", "nosferatu"],
+        "visible": false
     },
     {
         "id": "joshua",
@@ -103,7 +106,8 @@
     {
         "id": "alfie_richards",
         "name": "Alfie Richards  &#9794;",
-        "tags": ["camarilla", "ghoul"]
+        "tags": ["camarilla", "ghoul", "dead"],
+        "visible": false
     },
     {
         "id": "angelina_forbes",
@@ -120,6 +124,11 @@
     {
         "id": "trevon_bryant",
         "name": "Trevon Bryant &#9794;",
-        "tags": ["camarilla", "ghoul"]
+        "tags": ["camarilla", "ghoul", "dead"],
+        "visible": false
+    }, {
+        "id": "gabrielle",
+        "name": "Gabrielle &#9792;",
+        "tags": ["camarilla", "ventrue", "primogen"]
     }
 ]
