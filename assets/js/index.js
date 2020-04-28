@@ -193,6 +193,12 @@ app.vue = new Vue({
             let exclusionFilterer = new app.ExclusionFilterer();
 
             for (let character of this.$data.characters) {
+
+                if ("visible" in character && !character.visible) {
+                    character.filtered = true;
+                    continue;
+                }
+
                 character.filtered = searchFilterer.isFiltered(character.name) ||
                     exclusionFilterer.isExcluded(character);
             }
