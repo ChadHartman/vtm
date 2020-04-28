@@ -36,11 +36,11 @@
 }
 
 .tag.camarilla {
-    background-image: url("../img/icon-small-camarilla.png");
+    background-image: url("../img/icon/camarilla.png");
 }
 
 .tag.brujah {
-    background-image: url("../img/icon-small-brujah.png");
+    background-image: url("../img/icon/brujah.png");
 }
 
 .tag.prince:before {
@@ -52,7 +52,7 @@
 }
 
 .tag.malkavian {
-    background-image: url("../img/icon-small-malkavian.png");
+    background-image: url("../img/icon/malkavian.png");
 }
 
 .tag.primogen:before {
@@ -60,19 +60,19 @@
 }
 
 .tag.nosferatu {
-    background-image: url("../img/icon-small-nosferatu.png");
+    background-image: url("../img/icon/nosferatu.png");
 }
 
 .tag.toreador {
-    background-image: url("../img/icon-small-toreador.png");
+    background-image: url("../img/icon/toreador.png");
 }
 
 .tag.tremere {
-    background-image: url("../img/icon-small-tremere.png");
+    background-image: url("../img/icon/tremere.png");
 }
 
 .tag.ventrue {
-    background-image: url("../img/icon-small-ventrue.png");
+    background-image: url("../img/icon/ventrue.png");
 }
 
 .tag.harpy:before {
@@ -84,7 +84,7 @@
 }
 
 .tag.gangrel {
-    background-image: url("../img/icon-small-gangrel.png");
+    background-image: url("../img/icon/gangrel.png");
 }
 
 .tag.player:before {
@@ -92,7 +92,7 @@
 }
 
 .tag.anarch {
-    background-image: url("../img/icon-small-anarch.png");
+    background-image: url("../img/icon/anarch.png");
 }
 
 .tag.emissary:before {
@@ -100,7 +100,7 @@
 }
 
 .tag.caitiff {
-    background-image: url("../img/icon-small-caitiff.png");
+    background-image: url("../img/icon/caitiff.png");
 }
 
 .tag.keeper:before {
