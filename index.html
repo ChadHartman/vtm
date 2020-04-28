@@ -71,28 +71,34 @@
                         </div>
                     </div>
 
-                    <h2>Info</h2>
+                    <div v-if="selected_character.info">
+                        <h2>Info</h2>
 
-                    <ul>
-                        <li v-for="item in selected_character.info">
-                            <span>{{ item }}</span>
-                        </li>
-                    </ul>
+                        <ul>
+                            <li v-for="item in selected_character.info">
+                                <span>{{ item }}</span>
+                            </li>
+                        </ul>
+                    </div>
 
-                    <h2>Description</h2>
+                    <div v-if="selected_character.description">
+                        <h2>Description</h2>
 
-                    <p>{{ selected_character.description }}</p>
+                        <p>{{ selected_character.description }}</p>
+                    </div>
 
-                    <h2>History</h2>
+                    <div v-if="selected_character.history">
+                        <h2>History</h2>
 
-                    <ul>
-                        <li v-for="item in selected_character.history">
-                            <h3>{{ item.date }}</h3>
-                            <ul>
-                                <li v-for="note in item.notes"><span>{{ note }}</span></li>
-                            </ul>
-                        </li>
-                    </ul>
+                        <ul>
+                            <li v-for="item in selected_character.history">
+                                <h3>{{ item.date }}</h3>
+                                <ul>
+                                    <li v-for="note in item.notes"><span>{{ note }}</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div id="filter-settings" v-if="visibility.filter_settings">
                     <h1>Global</h1>
