@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/png" href="favicon.ico" />
     <title>VTM Relationship Map</title>
     <link href="assets/css/fontawesome.min.css" rel="stylesheet">
     <link href="assets/css/solid.min.css" rel="stylesheet">
@@ -66,9 +67,20 @@
         <div id="overlay" v-on:click="hideOverlay" v-if="visibility.overlay">
             <div id="modal">
                 <div id="character-detail" v-if="visibility.character_detail">
+
+                    <div class="nav-button prev">
+                        <a v-bind:href="'#char/detail/'+selected_character.prev_id">
+                            <i class="fas fa-arrow-alt-circle-left"></i>
+                        </a>
+                    </div>
+
+                    <div class="nav-button next">
+                        <a v-bind:href="'#char/detail/'+selected_character.next_id">
+                            <i class="fas fa-arrow-alt-circle-right"></i>
+                        </a>
+                    </div>
+
                     <h1 v-html="selected_character.name"></h1>
-
-
                     <hr />
                     <img class="portrait" v-if="selected_character.id"
                         v-bind:src="'assets/img/portrait/'+selected_character.id+'.png'" />

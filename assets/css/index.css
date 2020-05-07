@@ -9,6 +9,11 @@ html, body, p {
     font-family: sans-serif;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 #relmap {
     position: fixed;
     left: 0;
@@ -110,10 +115,6 @@ html, body, p {
     margin: 0;
     padding-left: 5px;
     list-style-position: inside;
-}
-
-.char-info a {
-    text-decoration: none;
 }
 
 .char-info.secondary_hover {
@@ -256,4 +257,18 @@ html, body, p {
     margin: 0 auto 0 auto;
     border: 1px solid black;
     border-radius: 5px;
+}
+
+#modal .nav-button {
+    position: absolute;
+    top: 8px;
+    font-size: 56px;
+}
+
+#modal .nav-button.prev {
+    left: 8px;
+}
+
+#modal .nav-button.next {
+    right: 8px;
 }

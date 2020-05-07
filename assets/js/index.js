@@ -227,12 +227,26 @@ app.vue = new Vue({
             let searchFilterer = new app.SearchFilterer();
             let exclusionFilterer = new app.ExclusionFilterer();
             let hiddenFilter = new app.HiddenFilterer();
+            let unfiltered = [];
 
             for (let character of this.$data.characters) {
                 character.filtered =
                     hiddenFilter.isFiltered(character) ||
                     searchFilterer.isFiltered(character.name) ||
                     exclusionFilterer.isFiltered(character);
+                if (!character.filtered) {
+                    unfiltered.push(character);
+                }
+            }
+
+            // Add indeces of adjacent characters for navigation
+            for (let i = 0; i < unfiltered.length; i++) {
+                let prevChar = unfiltered[i === 0 ? unfiltered.length - 1 : i - 1];
+                let curChar = unfiltered[i];
+                let nextChar = unfiltered[(i + 1) % unfiltered.length]
+
+                curChar.prev_id = prevChar.id;
+                curChar.next_id = nextChar.id;
             }
 
             this.layoutCharactersCircular();
